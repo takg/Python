@@ -1,6 +1,20 @@
 import os
 import face_recognition
 import cv2
+import pickle
+import argparse
+
+#  the logic of face recognition is derived from -->
+#  https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input_path", help="input path containing the images for training program")
+    parser.add_argument("--output_path", help="ouput path for saving the details of computed faces")
+    parser.add_argument("--image_path_to_be_recognized", help="input path containing the images to be recognized")
+
+    args = parser.parse_args()
+    return args
 
 
 def get_files_from_folder(folder):
@@ -18,36 +32,46 @@ def get_folders_from_folder(folder):
     return [x for x in folders]
 
 
-def encode_faces(image_files):
+def encode_faces(image_files, output_file):
     knownEncodings = []
     knownNames = []
     for name in image_files.keys():
         for image_path in image_files[name]:
             image_path = image_path.replace('/', '\\\\')
-            #print(name, image_path)
             encodings, boxes, image = encode_face(image_path)
             # loop over the encodings
-            #print('abc')
             for encoding in encodings:
                 # add each encoding + name to our set of known names and
                 # encodings
-                #print('def')
                 knownEncodings.append(encoding)
-                #print('ghi')
                 knownNames.append(name)
 
+    data = {"name": knownNames, "encoding": knownEncodings}
+    file = open(output_file, "wb")
+    file.write(pickle.dumps(data))
+    file.close()
+
     return knownNames, knownEncodings
+
+
+def get_encodings(input_file):
+    file = open(input_file, "rb")
+    data = pickle.loads(file.read())
+    file.close()
+
+    return data["name"], data["encoding"]
+
 
 def encode_face(image_path):
     # load the input image and convert it from BGR (OpenCV ordering)
     # to dlib ordering (RGB)
     print('Encoding image ', image_path, '...')
     image = cv2.imread(image_path, 1)
-    #rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # detect the (x, y)-coordinates of the bounding boxes
     # corresponding to each face in the input image
     # model = cnn, hog
-    #The CNN method is more accurate but slower. HOG is faster but less accurate.
+    # The CNN method is more accurate but slower. HOG is faster but less accurate.
     boxes = face_recognition.face_locations(image, model="cnn")
     # compute the facial embedding for the face
     encodings = face_recognition.face_encodings(image, boxes)
@@ -58,21 +82,14 @@ def encode_face(image_path):
 def recognize_face(image_path, known_names, known_encoding):
     encodings, boxes, image = encode_face(image_path.replace("/", "\\\\"))
     names = []
-
     print("Starting face recognition...")
-    #print(type(encodings), len(encodings))
-    #print(type(known_encoding), len(known_encoding))
-    #print(type(known_names), len(known_names))
 
     # loop over the facial embeddings
     for encoding in encodings:
         # attempt to match each face in the input image to our known
         # encodings
-        #print("one")
-        #print(known_encoding[0])
         matches = face_recognition.compare_faces(known_encoding, encoding)
         name = "Unknown"
-        #print(name)
         # check to see if we have found a match
         if True in matches:
             # find the indexes of all matched faces then initialize a
@@ -95,7 +112,7 @@ def recognize_face(image_path, known_names, known_encoding):
             # update the list of names
             names.append(name)
 
-    print(names)
+    print('Names found', names)
 
     # loop over the recognized faces
     for ((top, right, bottom, left), name) in zip(boxes, names):

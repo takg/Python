@@ -1,12 +1,10 @@
-from back_end import get_files_from_folder, get_folders_from_folder
 from gui import FaceRecognitionGUI
 from PyQt5.QtWidgets import QApplication
+from back_end import parse_args
 import sys
 
-input_path = 'C:/git/github/face_recognition/pictures/library'
-output_path = 'C:/git/github/face_recognition/pictures/output'
-
+args = parse_args()
 app = QApplication(sys.argv)
-gui = FaceRecognitionGUI(input_path, output_path)
+gui = FaceRecognitionGUI(args.input_path, args.output_path, args.image_path_to_be_recognized)
 gui.show()
 app.exec_()

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtWidgets import QLineEdit, QComboBox
 from PyQt5.QtGui import QPixmap
 
-from back_end import get_files_from_folder, recognize_face, encode_faces
+from back_end import get_files_from_folder, recognize_face, encode_faces, get_encodings
 
 import cv2
 import datetime
@@ -12,15 +12,18 @@ import os
 
 
 class FaceRecognitionGUI(QWidget):
-    def __init__(self, input_path, output_path, parent=None):
+    def __init__(self, input_path, output_path, images_to_be_recognized_path, parent=None):
         super(FaceRecognitionGUI, self).__init__(parent)
 
         self.input_path = input_path
         self.output_path = output_path
+        self.images_to_be_recognized_path = images_to_be_recognized_path
+
         self.image_files = {}
         self.combo_box = QComboBox()
         self.line_edit = QLineEdit(self)
         self.displayed_images = 0
+
         self.setup_home_screen()
 
     def get_images_from_library(self):
@@ -31,9 +34,12 @@ class FaceRecognitionGUI(QWidget):
         self.setWindowTitle('Welcome to face recognition program!')
         grid_layout = QGridLayout(self)
 
-        grid_layout.addWidget(self.combo_box, 0, 1)
+        grid_layout.addWidget(self.combo_box, 0, 0)
         button = QPushButton("View Library")
         button.clicked.connect(self.show_images_for_selected_name)
+        grid_layout.addWidget(button, 0, 1)
+        button = QPushButton("Compute and Save")
+        button.clicked.connect(self.compute_and_save)
         grid_layout.addWidget(button, 0, 2)
         button = QPushButton("Recognize faces")
         button.clicked.connect(self.recognize_faces)
@@ -50,13 +56,17 @@ class FaceRecognitionGUI(QWidget):
         self.setLayout(grid_layout)
         self.refresh_items_in_combo_box()
 
-    def recognize_faces(self):
-        images_path = get_files_from_folder('C:/git/github/face_recognition/pictures/live/')
+    def compute_and_save(self):
+        output_file_path = self.output_path + '/data.bin'
+        encode_faces(self.image_files, output_file_path)
 
-        known_names, known_encoding = encode_faces(self.image_files)
+    def recognize_faces(self):
+        images_path = get_files_from_folder(self.images_to_be_recognized_path)
+
+        known_names, known_encoding = get_encodings(self.output_path + '/data.bin')
 
         for name in images_path.keys():
-            for filin images_path[name]:
+            for file in images_path[name]:
                 recognize_face(file, known_names, known_encoding)
 
     def refresh_items_in_combo_box(self):
