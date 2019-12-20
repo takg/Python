@@ -2,5 +2,5 @@
 
 python.exe tic_tac_toe/main.py
 
-# Below is the screenshot of the application
+Below is the screenshot of the application
 ![ScreenShot](ScreenShot.PNG)
