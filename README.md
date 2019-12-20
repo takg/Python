@@ -1,5 +1,5 @@
 # python
-Python project for 
+Below are the projects completed in this repository
 
 |Sl No|Project|
 |---|---|
