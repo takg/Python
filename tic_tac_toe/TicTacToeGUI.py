@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QPushButton, QGridLayout, QWidget, QMessageBox
 import TicTacToeBoard
@@ -11,13 +12,13 @@ class TicTacToeGUI(QWidget):
         self.grid_layout = QGridLayout(self)
         self.buttons = []
         self.setWindowIcon(QIcon("images/tic_tac_toe.png"))
-        self.setFixedHeight(200)
-        self.setFixedWidth(200)
+        self.setFixedHeight(250)
+        self.setFixedWidth(250)
 
         for i in range(9):
             button = QPushButton("")
-            button.setFixedWidth(50)
-            button.setFixedHeight(50)
+            button.setFixedWidth(75)
+            button.setFixedHeight(75)
             button.clicked.connect(self.on_clicked)
             self.buttons.append(button)
 
@@ -62,7 +63,7 @@ class TicTacToeGUI(QWidget):
     def game_won(self):
         r_value = QMessageBox.information(self,
                                 "Game Over",
-                                "Player 1 wins! Do you want to play a new game?",
+                                "You win! Do you want to play a new game?",
                                 QMessageBox.Yes,
                                 QMessageBox.No)
 
@@ -83,8 +84,10 @@ class TicTacToeGUI(QWidget):
     def refresh_board(self):
         for i in range(9):
             if self.board.check_position_empty(i):
-                self.buttons[i].setText("-")
+                self.buttons[i].setIcon(QIcon())
             elif self.board.check_position_taken_by_first_player(i):
-                self.buttons[i].setText("X")
+                self.buttons[i].setIcon(QIcon("images/tick.png"))
+                self.buttons[i].setIconSize(QSize(70, 70))
             else:
-                self.buttons[i].setText("O")
+                self.buttons[i].setIcon(QIcon("images/cross.jfif"))
+                self.buttons[i].setIconSize(QSize(70, 70))
