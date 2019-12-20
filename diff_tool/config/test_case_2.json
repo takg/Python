@@ -1,0 +1,8 @@
+{
+  "test_case_id": "1",
+  "test_case_name": "not matching data (add/update/update with threshold)",
+  "data_type": "csv",
+  "lhs": "test_data/test_case_2_lhs.csv",
+  "rhs": "test_data/test_case_2_rhs.csv",
+  "key": "Employee ID"
+}

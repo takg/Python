@@ -1,0 +1,8 @@
+{
+  "test_case_id": "1",
+  "test_case_name": "matching data",
+  "data_type": "csv",
+  "lhs": "test_data/test_case_1_lhs.csv",
+  "rhs": "test_data/test_case_1_rhs.csv",
+  "key": "Employee ID"
+}
