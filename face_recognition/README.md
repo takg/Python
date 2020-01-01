@@ -4,9 +4,9 @@ Python project for face recognition
 This project shall help identify faces from a database built.
 
 Uses third party modules (check requirements.txt for more details):
-1. face_recognition
-2. opencv
-3. pyqt5
+* face_recognition
+* opencv
+* pyqt5
 
 ### use "pip install requirements.txt" to install the third party libraries
 
