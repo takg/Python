@@ -6,3 +6,4 @@ Below are the projects completed in this repository
 |1.|Face recognition|
 |2.|Diff tool|
 |3.|Tic Tac Toe|
+|4.|Always active on Teams|
